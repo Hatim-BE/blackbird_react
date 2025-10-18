@@ -8,10 +8,13 @@ import Grid from '@mui/material/Grid';
 import Snackbar from '@mui/material/Snackbar';
 import Typography from '@mui/material/Typography';
 import logo from '../../assets/logo.svg';
-import { validateEmail, validatePassword } from '../../utils/validation'
+import { validateEmail, validatePassword, validatePasswordHelper } from '../../utils/validation'
 export default function LoginForm() {
   const [showAlert, setShowAlert] = useState(false);
   const [severity, setSeverity] = useState(false);
+  const [showAlrtPwd, setShowAlrtPwd] = useState(false);
+  const [showAlrtEmail, setShowAlrtEmail] = useState(false);
+
   const validateForm = (event) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget);
@@ -21,6 +24,7 @@ export default function LoginForm() {
     // Add validation code here
     var email_validated = validateEmail(email)
     var password_validated = validatePassword(password)
+    var validate_password_helper = validatePasswordHelper(password);
 
     if (email_validated && password_validated){
       setShowAlert("Login successfully");
@@ -29,14 +33,11 @@ export default function LoginForm() {
     }
     else{
       if (!email_validated){
-        setShowAlert("Check your email format");
-        setSeverity("error");
+        setShowAlrtEmail("Check your email format");
 
       }
       else if(!password_validated){
-        setShowAlert("Password does not meet requirements");
-        setSeverity("error");
-
+        setShowAlrtPwd(validate_password_helper);
       }
     }
     return email, password;
@@ -99,6 +100,8 @@ export default function LoginForm() {
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <TextField
+              error={showAlrtEmail}
+              helperText={showAlrtEmail}
               margin="normal"
               required
               fullWidth
@@ -109,6 +112,8 @@ export default function LoginForm() {
               autoFocus
             />
             <TextField
+              error={showAlrtPwd}
+              helperText={showAlrtPwd}
               margin="normal"
               required
               fullWidth

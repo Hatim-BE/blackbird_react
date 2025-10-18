@@ -8,10 +8,10 @@ import Grid from '@mui/material/Grid';
 import Snackbar from '@mui/material/Snackbar';
 import Typography from '@mui/material/Typography';
 import logo from '../../assets/logo.svg';
-
-
+import { validateEmail, validatePassword } from '../../utils/validation'
 export default function LoginForm() {
   const [showAlert, setShowAlert] = useState(false);
+  const [severity, setSeverity] = useState(false);
   const validateForm = (event) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget);
@@ -19,7 +19,27 @@ export default function LoginForm() {
     const password = data.get('password');
 
     // Add validation code here
+    var email_validated = validateEmail(email)
+    var password_validated = validatePassword(password)
 
+    if (email_validated && password_validated){
+      setShowAlert("Login successfully");
+      setSeverity("success");
+
+    }
+    else{
+      if (!email_validated){
+        setShowAlert("Check your email format");
+        setSeverity("error");
+
+      }
+      else if(!password_validated){
+        setShowAlert("Password does not meet requirements");
+        setSeverity("error");
+
+      }
+    }
+    return email, password;
   }
 
   const handleSubmit = (event) => {
@@ -30,19 +50,19 @@ export default function LoginForm() {
       password: data.get('password'),
     });
     validateForm(event);
-    setShowAlert("Login Successful");
+    // setShowAlert("Login Successful");
   };
 
   return (
     <>
-      {showAlert &&
+      {showAlert && severity &&
         <Snackbar
           open={showAlert}
           autoHideDuration={6000}
           onClose={() => setShowAlert(false)}
           message={showAlert}
         >
-          <Alert>{showAlert}</Alert>
+          <Alert severity={severity}>{showAlert}</Alert>
         </Snackbar>
       }
       <Grid
